@@ -15,12 +15,12 @@ def about():
     return 'About'
 
 def load_model():
-    if "anime_recommendation_model" not in global():
+    if "anime_recommendation_model" not in globals():
         global anime_recommendation_model
         anime_recommendation_model = pickle.load(open('data/anime_recommendation_model.sav', 'rb'))
 
 def load_user_list(username):
-    if "user_history" not in global() and "user_scores" not in global() :
+    if "user_history" not in globals() and "user_scores" not in globals() :
         global user_history
         global user_scores
         item_per_page = 1000
