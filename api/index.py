@@ -1,23 +1,23 @@
-from flask import Flask, request
+#from flask import Flask, request
 import pickle
 import requests as rq
 import numpy as np
 import pandas as pd
 
-app = Flask(__name__)
+#app = Flask(__name__)
 
-@app.route('/')
+#@app.route('/')
 def home():
     return 'Hello, World!'
 
-@app.route('/about')
+#@app.route('/about')
 def about():
     return 'About'
 
 def load_model():
     if "anime_recommendation_model" not in globals():
         global anime_recommendation_model
-        anime_recommendation_model = pickle.load(open('data/anime_recommendation_model.sav', 'rb'))
+        anime_recommendation_model = pickle.load(open('../data/anime_recommendation_model.sav', 'rb'))
 
 def load_user_list(username):
     item_per_page = 1000
@@ -42,15 +42,15 @@ def get_recommendation(anime_id):
     return anime_recommendation_model.loc[anime_recommendation_model.MAL_ID == anime_id].values.flatten()[:-1]
 
 def append_predicted_scores(anime_list, user_scores):
-    return [[rec, user_scores.loc[user_scores.anime_id.isin(get_recommendation(rec))].rating.mean()] for rec in anime_list]
+    return [[rec, "{:2.2f}".format(np.nan_to_num(user_scores.loc[user_scores.anime_id.isin(get_recommendation(rec))].rating.mean()))] for rec in anime_list]
 
-@app.route('/recommend/<username>/<id>')
+#@app.route('/recommend/<username>/<id>')
 def get_recommendation_with_scores(username, id):
     user_history, user_scores = load_user_list(username)
     load_model()
     return append_predicted_scores(get_recommendation(id), user_scores)
 
-@app.route('/recommend/<username>')
+#@app.route('/recommend/<username>')
 def get_recommendations_for_current_user_with_scores(username):
     user_history, user_scores = load_user_list(username)
     load_model()
