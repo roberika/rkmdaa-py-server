@@ -48,7 +48,7 @@ def append_predicted_scores(anime_list, user_scores):
 def get_recommendation_with_scores(username, id):
     user_history, user_scores = load_user_list(username)
     load_model()
-    return append_predicted_scores(get_recommendation(id), user_scores)
+    return append_predicted_scores(get_recommendation(id).tolist(), user_scores)
 
 @app.route('/recommend/<username>')
 def get_recommendations_for_current_user_with_scores(username):
