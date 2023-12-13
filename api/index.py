@@ -17,7 +17,7 @@ def about():
 def load_model():
     if "anime_recommendation_model" not in globals():
         global anime_recommendation_model
-        anime_recommendation_model = pickle.load(open('../data/anime_recommendation_model.sav', 'rb'))
+        anime_recommendation_model = pickle.load(open('data/anime_recommendation_model.sav', 'rb'))
 
 def load_user_list(username):
     item_per_page = 1000
