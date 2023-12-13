@@ -66,7 +66,7 @@ def get_recommendations_for_current_user(username):
     load_user_list(username)
     return get_recommendations(user_history.anime_id.to_list())
 
-@app.route('/get_recommendations/username')
+@app.route('/get_recommendations/<username>')
 def get_recommendations_for_current_user_with_scores(username):
     load_user_list(username)
     return get_recommendations_with_scores(user_history.anime_id.to_list())
