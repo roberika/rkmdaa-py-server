@@ -15,7 +15,7 @@ def about():
     return 'About'
 
 def load_model():
-    if "anime_recommendation_model" is not in globals():
+    if "anime_recommendation_model" not in globals():
         global anime_recommendation_model
         anime_recommendation_model = pickle.load(open('data/anime_recommendation_model.sav', 'rb'))
 
