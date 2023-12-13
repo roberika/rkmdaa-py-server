@@ -42,7 +42,7 @@ def get_recommendation(anime_id):
     return anime_recommendation_model.loc[anime_recommendation_model.MAL_ID == anime_id].values.flatten()[:-1]
 
 def append_predicted_scores(anime_list, user_scores):
-    return [[rec, "{:2.2f}".format(np.nan_to_num(user_scores.loc[user_scores.anime_id.isin(get_recommendation(rec))].rating.mean()))] for rec in anime_list]
+    return [[str(rec), "{:2.2f}".format(np.nan_to_num(user_scores.loc[user_scores.anime_id.isin(get_recommendation(rec))].rating.mean()))] for rec in anime_list]
 
 @app.route('/recommend/<username>/<id>')
 def get_recommendation_with_scores(username, id):
