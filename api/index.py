@@ -36,6 +36,9 @@ def load_user_list(username):
     user_scores = user_history.loc[user_history.rating != 0]
     return user_history, user_scores
 
+def get_recommendation(anime_id):
+    return anime_recommendation_model.loc[anime_recommendation_model.MAL_ID == anime_id].values.flatten()[:-1]
+
 def append_predicted_scores(anime_list, user_scores):
     return [[rec, user_scores.loc[user_scores.anime_id.isin(get_recommendation(rec))].rating.mean()] for rec in anime_list]
 
@@ -43,10 +46,7 @@ def append_predicted_scores(anime_list, user_scores):
 def get_recommendation_with_scores(username, id):
     user_history, user_scores = load_user_list(username)
     anime_recommendation_model = load_model()
-    
-    recs = anime_recommendation_model.loc[anime_recommendation_model.MAL_ID == id].values.flatten()[:-1]
-    
-    return append_predicted_scores(recs, user_scores)
+    return append_predicted_scores(get_recommendation(id), user_scores)
 
 @app.route('/recommend/<username>')
 def get_recommendations_for_current_user_with_scores(username):
