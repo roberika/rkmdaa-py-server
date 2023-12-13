@@ -15,7 +15,9 @@ def about():
     return 'About'
 
 def load_model():
-    return pickle.load(open('data/anime_recommendation_model.sav', 'rb'))
+    if "anime_recommendation_model" is not in globals():
+        global anime_recommendation_model
+        anime_recommendation_model = pickle.load(open('data/anime_recommendation_model.sav', 'rb'))
 
 def load_user_list(username):
     item_per_page = 1000
@@ -45,13 +47,13 @@ def append_predicted_scores(anime_list, user_scores):
 @app.route('/recommend/<username>/<id>')
 def get_recommendation_with_scores(username, id):
     user_history, user_scores = load_user_list(username)
-    anime_recommendation_model = load_model()
+    load_model()
     return append_predicted_scores(get_recommendation(id), user_scores)
 
 @app.route('/recommend/<username>')
 def get_recommendations_for_current_user_with_scores(username):
     user_history, user_scores = load_user_list(username)
-    anime_recommendation_model = load_model()
+    load_model()
     
     anime_ids = user_history.anime_id.to_list()
     recs = anime_recommendation_model.loc[anime_recommendation_model.MAL_ID.isin(anime_ids)].values.flatten()
