@@ -66,7 +66,7 @@ def get_recommendations_for_current_user_with_scores(username):
 @app.route('/history/<username>')
 def get_user_history_with_scores(username):
     user_history, user_scores = load_user_list(username)
-    return [[str(anime.anime_id), str(anime.rating)] for anime in user_history.values]
+    return [[str(anime.anime_id), str(anime.rating)] for anime in user_history]
     
     
 
