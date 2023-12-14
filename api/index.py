@@ -48,13 +48,13 @@ def append_predicted_scores(anime_list, user_scores):
 def get_recommendation_with_empty_scores(id):
     load_model()
     recs = get_recommendation(id)
-    return [{"id": str(rec), "score": "0.0000"} for rec in recs]
+    return {"data": [{"id": str(rec), "score": "0.0000"} for rec in recs]}
 
 @app.route('/recommend/<username>/<id>')
 def get_recommendation_with_scores(username, id):
     user_history, user_scores = load_user_list(username)
     load_model()
-    return append_predicted_scores(get_recommendation(id), user_scores)
+    return {"data": append_predicted_scores(get_recommendation(id), user_scores)}
 
 @app.route('/recommend/<username>')
 def get_recommendations_for_current_user_with_scores(username):
@@ -67,12 +67,12 @@ def get_recommendations_for_current_user_with_scores(username):
     recs_sorted, indices = np.unique(np.array(recs), return_index=True)
     recs = [recs[index] for index in sorted(indices)]
     
-    return append_predicted_scores(recs, user_scores)
+    return {"data": append_predicted_scores(recs, user_scores)}
 
 @app.route('/history/<username>')
 def get_user_history_with_scores(username):
     user_history, user_scores = load_user_list(username)
-    return [{"id": str(row[0]), "score": str(row[1])} for row in user_history.values]
+    return {"data": [{"id": str(row[0]), "score": str(row[1])} for row in user_history.values]}
     
     
 
