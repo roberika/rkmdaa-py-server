@@ -42,7 +42,7 @@ def get_recommendation(anime_id):
     return anime_recommendation_model.loc[anime_recommendation_model.MAL_ID == int(anime_id)].values.flatten()[:-1]
 
 def append_predicted_scores(anime_list, user_scores):
-    return [[str(rec), "{:2.2f}".format(np.nan_to_num(user_scores.loc[user_scores.anime_id.isin(get_recommendation(rec))].rating.mean()))] for rec in anime_list]
+    return [{"id": str(rec), "score": "{:2.4f}".format(np.nan_to_num(user_scores.loc[user_scores.anime_id.isin(get_recommendation(rec))].rating.mean()))} for rec in anime_list]
 
 @app.route('/recommend/<username>/<id>')
 def get_recommendation_with_scores(username, id):
@@ -66,7 +66,7 @@ def get_recommendations_for_current_user_with_scores(username):
 @app.route('/history/<username>')
 def get_user_history_with_scores(username):
     user_history, user_scores = load_user_list(username)
-    return [[str(item) for item in row] for row in user_history.values]
+    return [{"id": str(row[0]), "score": str(row[1])} for row in user_history.values]
     
     
 
