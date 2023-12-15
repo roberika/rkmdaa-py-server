@@ -31,9 +31,9 @@ def load_user_list(username):
         user = user | response.json()["data"]
         i += 1
     ids = [anime["node"]["id"] for anime in user]
+    names = [anime["node"]["title"] for anime in user]
     scores = [anime["list_status"]["score"] for anime in user]
-    list_anime = {"anime_id": ids, "rating": scores}
-    user_history = pd.DataFrame({"anime_id": ids, "rating": scores})
+    user_history = pd.DataFrame({"anime_id": ids, "rating": scores, "name": names})
     user_history = user_history.loc[user_history.anime_id <= 48492]
     user_scores = user_history.loc[user_history.rating != 0]
     return user_history, user_scores
@@ -42,13 +42,14 @@ def get_recommendation(anime_id):
     return anime_recommendation_model.loc[anime_recommendation_model.MAL_ID == int(anime_id)].values.flatten()[:-1]
 
 def append_predicted_scores(anime_list, user_scores):
-    return [{"id": str(rec), "score": "{:2.4f}".format(np.nan_to_num(user_scores.loc[user_scores.anime_id.isin(get_recommendation(rec))].rating.mean()))} for rec in anime_list]
+    return [{"id": str(rec), "score": "{:2.4f}".format(np.nan_to_num(user_scores.loc[user_scores.anime_id.isin(get_recommendation(rec))].rating.mean())), "name": user_scores.name} for rec in anime_list]
 
 @app.route('/recommend/0/<id>')
 def get_recommendation_with_empty_scores(id):
     load_model()
+    names = pickle.load(open('data/names.sav', 'rb'))
     recs = get_recommendation(id)
-    return {"data": [{"id": str(rec), "score": "0.0000"} for rec in recs]}
+    return {"data": [{"id": str(rec), "score": "0.0000", "name": names[rec]} for rec in recs]}
 
 @app.route('/recommend/<username>/<id>')
 def get_recommendation_with_scores(username, id):
@@ -72,7 +73,7 @@ def get_recommendations_for_current_user_with_scores(username):
 @app.route('/history/<username>')
 def get_user_history_with_scores(username):
     user_history, user_scores = load_user_list(username)
-    return {"data": [{"id": str(row[0]), "score": str(row[1])} for row in user_history.values]}
+    return {"data": [{"id": row.anime_id, "score": row.rating, "name": row.name} for row in user_history]}
     
     
 
