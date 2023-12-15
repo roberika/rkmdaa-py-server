@@ -43,14 +43,14 @@ def get_recommendation(anime_id):
 
 def append_predicted_scores(anime_list, user_scores):
     names = pickle.load(open('../data/names.sav', 'rb'))
-    return [{"id": str(rec), "score": "{:2.4f}".format(np.nan_to_num(user_scores.loc[user_scores.anime_id.isin(get_recommendation(rec))].rating.mean())), "name": names[rec].Name} for rec in anime_list]
+    return [{"id": str(rec), "score": "{:2.4f}".format(np.nan_to_num(user_scores.loc[user_scores.anime_id.isin(get_recommendation(rec))].rating.mean())), "name": names.loc[rec].Name} for rec in anime_list]
 
 #@app.route('/recommend/0/<id>')
 def get_recommendation_with_empty_scores(id):
     load_model()
     names = pickle.load(open('../data/names.sav', 'rb'))
     recs = get_recommendation(id)
-    return {"data": [{"id": str(rec), "score": "0.0000", "name": names[rec].Name} for rec in recs]}
+    return {"data": [{"id": str(rec), "score": "0.0000", "name": names.loc[rec].Name} for rec in recs]}
 
 #@app.route('/recommend/<username>/<id>')
 def get_recommendation_with_scores(username, id):
